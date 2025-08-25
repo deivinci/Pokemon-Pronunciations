@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>寶可夢中英日發音｜Pokémon GO 三語搜尋（含限定招式）</title>
+    <title>寶可夢中英日發音｜Pokémon GO 三語搜尋 + 限定招式</title>
     <style>
       :root {
         --bg: #0b1220;
@@ -19,9 +19,9 @@
       body {
         margin: 0;
         background: linear-gradient(180deg, #0b1220 0%, #0f172a 100%);
+        color: var(--text);
         font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
           "Noto Sans TC", "Hiragino Sans", "Microsoft JhengHei", sans-serif;
-        color: var(--text);
       }
       header {
         position: sticky;
@@ -48,10 +48,6 @@
         margin: 0;
         font-size: 22px;
         font-weight: 800;
-        letter-spacing: 0.5px;
-      }
-      .title h1:nth-child(1) {
-        color: #fff;
       }
       .title h1:nth-child(2) {
         color: #c7d2fe;
@@ -61,15 +57,14 @@
       }
       .controls {
         display: grid;
-        grid-template-columns: 1fr 180px 160px 140px;
+        grid-template-columns: 1fr 180px 160px 160px;
         gap: 10px;
       }
       .search {
         position: relative;
       }
       input,
-      select,
-      button {
+      select {
         width: 100%;
         border: 1px solid #374151;
         background: #0b1020;
@@ -100,7 +95,7 @@
       }
       .grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
         gap: 14px;
       }
       .card {
@@ -111,15 +106,15 @@
         display: flex;
         flex-direction: column;
       }
-      .card .head {
+      .head {
         display: flex;
         gap: 12px;
         padding: 12px;
         border-bottom: 1px solid #1f2937;
       }
       .sprite {
-        width: 84px;
-        height: 84px;
+        width: 88px;
+        height: 88px;
         background: #0b1020;
         border-radius: 14px;
         display: grid;
@@ -131,7 +126,7 @@
         width: 100%;
         height: 100%;
         object-fit: contain;
-        image-rendering: crisp-edges;
+        image-rendering: pixelated;
       }
       .names {
         flex: 1;
@@ -141,10 +136,11 @@
       }
       .name-line {
         display: flex;
-        gap: 6px;
+        gap: 8px;
         align-items: center;
+        flex-wrap: wrap;
       }
-      .name-tag {
+      .tag {
         font-size: 12px;
         padding: 2px 6px;
         border-radius: 999px;
@@ -152,18 +148,42 @@
         border: 1px solid #2a3343;
         color: #93c5fd;
       }
-      .name-text {
-        font-size: 14px;
+      .nm {
         font-weight: 700;
       }
-      .tts {
+      .region {
         display: flex;
-        gap: 8px;
+        gap: 6px;
+        align-items: center;
         margin-top: 6px;
       }
-      .tts button {
-        flex: 1;
-        cursor: pointer;
+      .badge {
+        background: #0b1020;
+        border: 1px solid #1f2937;
+        padding: 2px 8px;
+        border-radius: 999px;
+        font-size: 12px;
+      }
+      .types {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-top: 6px;
+      }
+      .type {
+        font-size: 12px;
+        padding: 2px 8px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+      }
+      .body {
+        padding: 10px 12px;
+      }
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 6px;
       }
       .pill {
         display: inline-flex;
@@ -176,10 +196,10 @@
         font-size: 12px;
         color: #cbd5e1;
       }
-      .pill .ex {
-        margin-left: 4px;
-        font-weight: 800;
-        color: #fb923c;
+      .stat {
+        font-family: ui-monospace, monospace;
+        font-size: 12px;
+        opacity: 0.9;
       }
       details {
         border-top: 1px solid #1f2937;
@@ -199,49 +219,16 @@
         padding: 8px 10px;
         border-top: 1px dashed #293241;
         font-size: 13px;
-        vertical-align: middle;
       }
       th {
         color: #9ca3af;
         text-align: left;
       }
-      .chips {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-        margin-top: 6px;
-      }
-      .stat {
-        font-family: ui-monospace, monospace;
-        font-size: 12px;
-        opacity: 0.9;
-      }
-      .footer {
-        color: #94a3b8;
-        font-size: 12px;
-        margin-top: 8px;
-      }
-      .region {
-        display: flex;
-        gap: 6px;
-        align-items: center;
-      }
-      .badge {
-        background: #0b1020;
-        border: 1px solid #1f2937;
-        padding: 2px 8px;
-        border-radius: 999px;
-        font-size: 12px;
-      }
-      .empty {
-        opacity: 0.7;
-        text-align: center;
-        padding: 40px;
-      }
       .loader {
         display: none;
         gap: 8px;
         align-items: center;
+        margin-top: 10px;
       }
       .loader.active {
         display: flex;
@@ -259,6 +246,40 @@
           transform: rotate(360deg);
         }
       }
+      .tts-ico {
+        font-size: 0.9em;
+        cursor: pointer;
+        margin-left: 4px;
+        vertical-align: middle;
+        opacity: 0.7;
+        user-select: none;
+      }
+      .tts-ico:hover {
+        opacity: 1;
+      }
+      .tts-ico.playing {
+        animation: pulse 0.9s ease-in-out infinite;
+        opacity: 1;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.15);
+        }
+      }
+      .footer {
+        color: #94a3b8;
+        font-size: 12px;
+        margin-top: 12px;
+      }
+      .empty {
+        opacity: 0.7;
+        text-align: center;
+        padding: 40px;
+      }
       .diag {
         max-width: 1200px;
         margin: 20px auto;
@@ -272,31 +293,68 @@
         padding: 10px;
         overflow: auto;
       }
-      .move-tts-btn {
-        margin-left: 6px;
-        padding: 2px 6px;
-        border-radius: 8px;
-        border: 1px solid #334155;
-        background: #0b1020;
-        color: #cbd5e1;
-        cursor: pointer;
+      /* 官方風格 type 顏色 */
+      .type.Normal {
+        background: #a8a77a;
+        color: #000;
       }
-      .move-tts-btn.playing {
-        border-color: #93c5fd;
-        transform: scale(1.05);
+      .type.Fire {
+        background: #ee8130;
       }
-      .name-tts-btn {
-        margin-left: 6px;
-        padding: 2px 8px;
-        border-radius: 999px;
-        border: 1px solid #334155;
-        background: #0b1020;
-        color: #cbd5e1;
-        cursor: pointer;
+      .type.Water {
+        background: #6390f0;
       }
-      .name-tts-btn.playing {
-        border-color: #93c5fd;
-        transform: scale(1.05);
+      .type.Electric {
+        background: #f7d02c;
+        color: #000;
+      }
+      .type.Grass {
+        background: #7ac74c;
+        color: #000;
+      }
+      .type.Ice {
+        background: #96d9d6;
+        color: #000;
+      }
+      .type.Fighting {
+        background: #c22e28;
+      }
+      .type.Poison {
+        background: #a33ea1;
+      }
+      .type.Ground {
+        background: #e2bf65;
+        color: #000;
+      }
+      .type.Flying {
+        background: #a98ff3;
+      }
+      .type.Psychic {
+        background: #f95587;
+      }
+      .type.Bug {
+        background: #a6b91a;
+        color: #000;
+      }
+      .type.Rock {
+        background: #b6a136;
+        color: #000;
+      }
+      .type.Ghost {
+        background: #735797;
+      }
+      .type.Dragon {
+        background: #6f35fc;
+      }
+      .type.Dark {
+        background: #705746;
+      }
+      .type.Steel {
+        background: #b7b7ce;
+        color: #000;
+      }
+      .type.Fairy {
+        background: #d685ad;
       }
     </style>
   </head>
@@ -312,9 +370,9 @@
           <div class="search">
             <input
               id="q"
-              placeholder="搜尋寶可夢或招式（支援 中/英/日）e.g. 妙蛙、Bulba、フシギ…"
+              placeholder="搜尋寶可夢或招式（中/英/日）e.g. 妙蛙、Bulba、フシギ…"
             />
-            <div class="hint">跨地區全域搜尋。名稱/別名/招式皆可。</div>
+            <div class="hint">跨地區全域搜尋。名稱 / 別名 / 招式皆可。</div>
           </div>
           <select id="region">
             <option value="all">全部地區</option>
@@ -349,57 +407,223 @@
       <div id="results" class="grid"></div>
       <div id="empty" class="empty">輸入關鍵字或選擇地區開始瀏覽。</div>
       <div class="footer">
-        資料來源：PoGoAPI（Moves & 配招）與 PokéAPI（多語名稱與圖片）。EPS/DPS
-        以 PoGo 一般戰鬥數據計算。若外部 API
-        無法連線，頁面將自動切換到內建小型離線資料以便測試。限定招式以內建 JSON
-        字典補齊（強制顯示）。
+        資料來源：PoGoAPI（Moves/配招）與 PokéAPI（名稱/圖片/屬性）。若外部 API
+        不通，將自動切換小型離線資料。
       </div>
     </main>
 
     <section class="diag container">
       <details>
-        <summary>診斷 / 測試（展開看自動測試結果）</summary>
+        <summary>診斷 / 測試</summary>
         <pre id="diag"></pre>
       </details>
     </section>
 
+    <!-- =============== 內嵌：GO 限定招式 JSON（方案B：招式→多個 pokemon_id） =============== -->
+    <script id="exclusive-moves" type="application/json">
+      {
+        "Frenzy Plant": {
+          "type": "Grass",
+          "category": "charged",
+          "names": {
+            "en": "Frenzy Plant",
+            "zh": "瘋狂植物",
+            "ja": "ハードプラント"
+          },
+          "pokemon_ids": [3, 154, 389, 497, 652, 724, 812, 1010]
+        },
+        "Blast Burn": {
+          "type": "Fire",
+          "category": "charged",
+          "names": {
+            "en": "Blast Burn",
+            "zh": "爆炸烈焰",
+            "ja": "ブラストバーン"
+          },
+          "pokemon_ids": [6, 157, 392, 500, 658, 727, 815, 1011]
+        },
+        "Hydro Cannon": {
+          "type": "Water",
+          "category": "charged",
+          "names": {
+            "en": "Hydro Cannon",
+            "zh": "加農水砲",
+            "ja": "ハイドロカノン"
+          },
+          "pokemon_ids": [9, 160, 395, 503, 695, 730, 818, 1012]
+        },
+        "Meteor Mash": {
+          "type": "Steel",
+          "category": "charged",
+          "names": {
+            "en": "Meteor Mash",
+            "zh": "彗星拳",
+            "ja": "コメットパンチ"
+          },
+          "pokemon_ids": [376]
+        },
+        "Rock Wrecker": {
+          "type": "Rock",
+          "category": "charged",
+          "names": {
+            "en": "Rock Wrecker",
+            "zh": "岩石炮",
+            "ja": "がんせきほう"
+          },
+          "pokemon_ids": [464]
+        },
+        "Smack Down": {
+          "type": "Rock",
+          "category": "fast",
+          "names": { "en": "Smack Down", "zh": "擊落", "ja": "うちおとす" },
+          "pokemon_ids": [248, 464]
+        },
+        "Psystrike": {
+          "type": "Psychic",
+          "category": "charged",
+          "names": {
+            "en": "Psystrike",
+            "zh": "精神擊破",
+            "ja": "サイコブレイク"
+          },
+          "pokemon_ids": [150]
+        },
+        "Aeroblast": {
+          "type": "Flying",
+          "category": "charged",
+          "names": {
+            "en": "Aeroblast",
+            "zh": "氣旋攻擊",
+            "ja": "エアロブラスト"
+          },
+          "pokemon_ids": [249]
+        },
+        "Sacred Fire": {
+          "type": "Fire",
+          "category": "charged",
+          "names": {
+            "en": "Sacred Fire",
+            "zh": "神聖之火",
+            "ja": "せいなるほのお"
+          },
+          "pokemon_ids": [250]
+        },
+        "Sacred Sword": {
+          "type": "Fighting",
+          "category": "charged",
+          "names": {
+            "en": "Sacred Sword",
+            "zh": "聖劍",
+            "ja": "せいなるつるぎ"
+          },
+          "pokemon_ids": [638, 639, 640, 646]
+        },
+        "Techno Blast": {
+          "type": "Normal",
+          "category": "charged",
+          "names": {
+            "en": "Techno Blast",
+            "zh": "高科技光炮",
+            "ja": "テクノバスター"
+          },
+          "pokemon_ids": [649]
+        },
+        "Doom Desire": {
+          "type": "Steel",
+          "category": "charged",
+          "names": {
+            "en": "Doom Desire",
+            "zh": "破滅之願",
+            "ja": "はめつのねがい"
+          },
+          "pokemon_ids": [385]
+        },
+        "Origin Pulse": {
+          "type": "Water",
+          "category": "charged",
+          "names": {
+            "en": "Origin Pulse",
+            "zh": "根源波動",
+            "ja": "こんげんのはどう"
+          },
+          "pokemon_ids": [382]
+        },
+        "Precipice Blades": {
+          "type": "Ground",
+          "category": "charged",
+          "names": {
+            "en": "Precipice Blades",
+            "zh": "斷崖之劍",
+            "ja": "だんがいのつるぎ"
+          },
+          "pokemon_ids": [383]
+        },
+        "Dragon Ascent": {
+          "type": "Flying",
+          "category": "charged",
+          "names": {
+            "en": "Dragon Ascent",
+            "zh": "畫龍點睛",
+            "ja": "ガリョウテンセイ"
+          },
+          "pokemon_ids": [384]
+        },
+        "Roar of Time": {
+          "type": "Dragon",
+          "category": "charged",
+          "names": {
+            "en": "Roar of Time",
+            "zh": "時光咆哮",
+            "ja": "ときのほうこう"
+          },
+          "pokemon_ids": [483]
+        },
+        "Spacial Rend": {
+          "type": "Dragon",
+          "category": "charged",
+          "names": {
+            "en": "Spacial Rend",
+            "zh": "亞空裂斬",
+            "ja": "あくうせつだん"
+          },
+          "pokemon_ids": [484]
+        },
+        "Shadow Force": {
+          "type": "Ghost",
+          "category": "charged",
+          "names": {
+            "en": "Shadow Force",
+            "zh": "暗影潛襲",
+            "ja": "シャドーダイブ"
+          },
+          "pokemon_ids": [487]
+        },
+        "Surf": {
+          "type": "Water",
+          "category": "charged",
+          "names": { "en": "Surf", "zh": "衝浪", "ja": "なみのり" },
+          "pokemon_ids": [131, 382, 484, 488, 484, 658]
+        }
+      }
+    </script>
+
     <script>
       (async function () {
-        // -------- Polyfills --------
-        if (!Promise.any) {
-          Promise.any = (iterable) =>
-            new Promise((resolve, reject) => {
-              let rejections = 0;
-              const errors = [];
-              const arr = Array.from(iterable);
-              if (arr.length === 0)
-                return reject(
-                  new AggregateError([], "All promises were rejected")
-                );
-              arr.forEach((p, i) =>
-                Promise.resolve(p).then(resolve, (e) => {
-                  errors[i] = e;
-                  if (++rejections === arr.length)
-                    reject(
-                      new AggregateError(errors, "All promises were rejected")
-                    );
-                })
-              );
-            });
-        }
-
+        // -------- utilities --------
         const $ = (s, r = document) => r.querySelector(s);
         const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
-        const loader = $("#loader");
-        const results = $("#results");
-        const empty = $("#empty");
-        const diag = $("#diag");
-        const qInput = $("#q");
-        const regionSel = $("#region");
-        const sortSel = $("#sort");
-        const expandChk = $("#expand");
+        const loader = $("#loader"),
+          results = $("#results"),
+          empty = $("#empty"),
+          diag = $("#diag");
+        const qInput = $("#q"),
+          regionSel = $("#region"),
+          sortSel = $("#sort"),
+          expandChk = $("#expand");
 
-        // --- Region ranges (National Dex) ---
+        const LANGS = { zh: "zh-TW", en: "en-US", ja: "ja-JP" };
+
+        // region ranges
         const REGIONS = {
           kanto: [1, 151],
           johto: [152, 251],
@@ -412,304 +636,111 @@
           paldea: [906, 1017],
         };
 
-        // --- External APIs ---
+        // APIs
         const POGO = {
-          fastMoves: "https://pogoapi.net/api/v1/fast_moves.json",
-          chargedMoves: "https://pogoapi.net/api/v1/charged_moves.json",
-          pokemonMoves: "https://pogoapi.net/api/v1/current_pokemon_moves.json",
+          fast: "https://pogoapi.net/api/v1/fast_moves.json",
+          charged: "https://pogoapi.net/api/v1/charged_moves.json",
+          current: "https://pogoapi.net/api/v1/current_pokemon_moves.json",
         };
         const POKE = {
-          move: (name) => `https://pokeapi.co/api/v2/move/${name}`,
           species: (id) => `https://pokeapi.co/api/v2/pokemon-species/${id}`,
+          pokemon: (id) => `https://pokeapi.co/api/v2/pokemon/${id}`,
+          move: (slug) => `https://pokeapi.co/api/v2/move/${slug}`,
           art: (id) =>
             `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`,
         };
 
-        // ---- Embedded fallback species names ----
+        // small offline fallback (for sandbox)
         const SPECIES_FALLBACK = {
           1: { en: "Bulbasaur", zh: "妙蛙種子", ja: "フシギダネ" },
-          3: { en: "Venusaur", zh: "妙蛙花", ja: "フシギバナ" },
           6: { en: "Charizard", zh: "噴火龍", ja: "リザードン" },
           9: { en: "Blastoise", zh: "水箭龜", ja: "カメックス" },
-          25: { en: "Pikachu", zh: "皮卡丘", ja: "ピカチュウ" },
+          248: { en: "Tyranitar", zh: "班基拉斯", ja: "バンギラス" },
+          376: { en: "Metagross", zh: "巨金怪", ja: "メタグロス" },
+          382: { en: "Kyogre", zh: "蓋歐卡", ja: "カイオーガ" },
+          383: { en: "Groudon", zh: "固拉多", ja: "グラードン" },
+          384: { en: "Rayquaza", zh: "烈空坐", ja: "レックウザ" },
+          385: { en: "Jirachi", zh: "基拉祈", ja: "ジラーチ" },
+          483: { en: "Dialga", zh: "帝牙盧卡", ja: "ディアルガ" },
+          484: { en: "Palkia", zh: "帕路奇亞", ja: "パルキア" },
+          487: { en: "Giratina", zh: "騎拉帝納", ja: "ギラティナ" },
         };
 
-        // ---- Embedded fallback for PoGo data (if fetch fails) ----
         const FALLBACK = {
           fast: [
-            {
-              name: "Tackle",
-              duration: 500,
-              energy_delta: 5,
-              power: 5,
-              kind: "fast",
-            },
             {
               name: "Vine Whip",
               duration: 600,
               energy_delta: 8,
               power: 7,
-              kind: "fast",
+              type: "Grass",
+            },
+            {
+              name: "Smack Down",
+              duration: 1200,
+              energy_delta: 8,
+              power: 16,
+              type: "Rock",
             },
           ],
           charged: [
             {
-              name: "Solar Beam",
-              duration: 4900,
-              energy_delta: -100,
-              power: 180,
-              kind: "charged",
-            },
-            {
-              name: "Sludge Bomb",
-              duration: 2300,
+              name: "Frenzy Plant",
+              duration: 2400,
               energy_delta: -50,
-              power: 80,
-              kind: "charged",
+              power: 100,
+              type: "Grass",
+            },
+            {
+              name: "Meteor Mash",
+              duration: 2600,
+              energy_delta: -50,
+              power: 100,
+              type: "Steel",
             },
           ],
-          pokeMoves: [
+          current: [
             {
-              pokemon_id: 3,
+              pokemon_id: 1,
               fast_moves: ["Vine Whip"],
-              charged_moves: ["Solar Beam", "Sludge Bomb"],
+              charged_moves: ["Frenzy Plant"],
             },
             {
-              pokemon_id: 6,
-              fast_moves: ["Tackle"],
-              charged_moves: ["Solar Beam"],
-            },
-            {
-              pokemon_id: 9,
-              fast_moves: ["Tackle"],
-              charged_moves: ["Solar Beam"],
+              pokemon_id: 248,
+              fast_moves: ["Smack Down"],
+              charged_moves: ["Rock Wrecker"],
             },
           ],
         };
 
-        // ---- GO 限定招式字典（內建 JSON；三語 + kind）----
-        // 若某些名詞沒有官方中/日翻，會退回英文（你可自行擴充/修正）
-        const EXCLUSIVE_DICT = {
-          "Frenzy Plant": {
-            zh: "瘋狂植物",
-            ja: "ハードプラント",
-            kind: "charged",
-          },
-          "Blast Burn": {
-            zh: "爆炸烈焰",
-            ja: "ブラストバーン",
-            kind: "charged",
-          },
-          "Hydro Cannon": {
-            zh: "加農水砲",
-            ja: "ハイドロカノン",
-            kind: "charged",
-          },
-          "Sacred Sword": { zh: "聖劍", ja: "せいなるつるぎ", kind: "charged" },
-          Aeroblast: { zh: "氣旋攻擊", ja: "エアロブラスト", kind: "charged" },
-          "Sacred Fire": {
-            zh: "神聖之火",
-            ja: "せいなるほのお",
-            kind: "charged",
-          },
-           "Roar of Time": {
-            zh: "時光咆哮",
-            ja: "ときのほうこう",
-            kind: "charged",
-          },
-          "Spacial Rend": {
-            zh: "亞空裂斬",
-            ja: "あくうせつだん",
-            kind: "charged",
-          },
-          "Fusion Flare": {
-            zh: "交錯火焰",
-            ja: "クロスフレイム",
-            kind: "charged",
-          },
-          "Fusion Bolt": {
-            zh: "交錯閃電",
-            ja: "クロスサンダー",
-            kind: "charged",
-          },
-          "Precipice Blades": {
-            zh: "斷崖之劍",
-            ja: "だんがいのつるぎ",
-            kind: "charged",
-          },
-          "Origin Pulse": {
-            zh: "根源波動",
-            ja: "こんげんのはどう",
-            kind: "charged",
-          },
-          "Dragon Ascent": {
-            zh: "畫龍點睛",
-            ja: "ガリョウテンセイ",
-            kind: "charged",
-          },
-          "Shadow Force": {
-            zh: "暗影潛襲",
-            ja: "シャドーダイブ",
-            kind: "charged",
-          },
-          "Nature's Madness": {
-            zh: "自然之怒",
-            ja: "しぜんのいかり",
-            kind: "charged",
-          },
-          "Meteor Beam": {
-            zh: "流星光束",
-            ja: "メテオビーム",
-            kind: "charged",
-          },
-          "Techno Blast": {
-            zh: "高科技光炮",
-            ja: "テクノバスター",
-            kind: "charged",
-          },
-          "Sunsteel Strike": {
-            zh: "流星閃衝",
-            ja: "メテオドライブ",
-            kind: "charged",
-          },
-          "Moongeist Beam": {
-            zh: "暗影之光",
-            ja: "シャドーレイ",
-            kind: "charged",
-          },
-          "Behemoth Blade": {
-            zh: "巨獸斬",
-            ja: "きょじゅうざん",
-            kind: "charged",
-          },
-          "Behemoth Bash": {
-            zh: "巨獸彈",
-            ja: "きょじゅうだん",
-            kind: "charged",
-          },
-          "High Horsepower": {
-            zh: "十萬馬力",
-            ja: "１０まんばりき",
-            kind: "charged",
-          },
-        };
+        // parse embedded exclusive moves
+        const EXCLUSIVE = JSON.parse(
+          document.getElementById("exclusive-moves").textContent
+        );
 
-        // ---- 限定招式對應寶可夢（National Dex ID → 限定英文招式陣列）----
-        // 你可持續擴充： starters / 傳說 / 準神 等
-        const EXCLUSIVE_BY_POKEMON = {
-          3: ["Frenzy Plant"], //Venusaur
-          6: ["Blast Burn"], // Charizard
-          9: ["Hydro Cannon"], // Blastoise
-          150: ["Psystrike"], // Mewtwo
-          154: ["Frenzy Plant"], // Meganium
-          157: ["Blast Burn"], // Typhlosion
-          160: ["Hydro Cannon"], // Feraligatr
-          254: ["Frenzy Plant"],
-          257: ["Blast Burn"],
-          260: ["Hydro Cannon"],
-          389: ["Frenzy Plant"], // Torterra
-          392: ["Blast Burn"], // Infernape
-          395: ["Hydro Cannon"], // Empoleon
-          497: ["Frenzy Plant"], // Serperior
-          500: ["Blast Burn"], // Emboar
-          503: ["Hydro Cannon"], // Samurott
-          652: ["Frenzy Plant"],
-          655: ["Blast Burn"],
-          658: ["Hydro Cannon"],
-          724: ["Frenzy Plant"],
-          727: ["Blast Burn"],
-          730: ["Hydro Cannon"],
-          812: ["Frenzy Plant"],
-          815: ["Blast Burn"],
-          818: ["Hydro Cannon"],
-          908: ["Frenzy Plant"],
-          911: ["Blast Burn"],
-          914: ["Hydro Cannon"],
-          649: ["Techno Blast"], //（示例，如需可加在字典）
-          638: ["Sacred Sword"],
-          639: ["Sacred Sword"],
-          640: ["Sacred Sword"], // Cobalion
-          382: ["Origin Pulse"],
-          383: ["Precipice Blades"],
-          384: ["Dragon Ascent"],
-          487: ["Shadow Force"], //騎拉帝納
-          526: ["Meteor Beam"], //龐岩怪
-          643: ["Fusion Flare"],
-          644: ["Fusion Bolt"],
-          249: ["Aeroblast"],
-          250: ["Sacred Fire"],
-          888: ["Behemoth Blade"],
-          889: ["Behemoth Bash"],
-          484: ["Spacial Rend"],
-          483: ["Roar of Time"],
-          785: ["Nature's Madness"],
-          786: ["Nature's Madness"],
-          787: ["Nature's Madness"],
-          788: ["Nature's Madness"],
-          791: ["Sunsteel Strike"],
-          792: ["Moongeist Beam"],
-          901: ["High Horsepower"],
-        };
-
-        const LANGS = { zh: "zh-TW", en: "en-US", ja: "ja-JP" };
-        let ttsNowBtn = null;
-        const speak = (text, langCode, btn) => {
-          if (!("speechSynthesis" in window))
-            return alert("此瀏覽器不支援語音合成");
-          try {
-            speechSynthesis.cancel();
-          } catch {}
-          if (ttsNowBtn) ttsNowBtn.classList.remove("playing");
-          const u = new SpeechSynthesisUtterance(text);
-          u.lang = langCode;
-          const voices = speechSynthesis.getVoices();
-          const v = voices.find((v) =>
-            v.lang?.toLowerCase().startsWith(langCode.toLowerCase())
-          );
-          if (v) u.voice = v;
-          u.onstart = () => {
-            if (btn) {
-              btn.classList.add("playing");
-              ttsNowBtn = btn;
-            }
-          };
-          u.onend = () => {
-            if (btn) {
-              btn.classList.remove("playing");
-              if (ttsNowBtn === btn) ttsNowBtn = null;
-            }
-          };
-          speechSynthesis.speak(u);
-        };
-
-        const toSlug = (name) =>
-          name
-            .toLowerCase()
-            .replace(/[^a-z0-9]+/g, "-")
-            .replace(/(^-|-$)/g, "");
-
+        // state
         const state = {
           fast: [],
           charged: [],
+          current: [],
           moveIndex: {},
-          pokeMoves: [],
+          moveNamesCache: {},
           speciesNames: {},
-          cacheMoveNames: {},
+          pokemonTypes: {},
         };
 
-        // Robust fetch with timeout & retries
+        // robust fetch
         async function getJSON(
           url,
-          { timeout = 12000, retries = 2, backoff = 1.8 } = {}
+          { timeout = 15000, retries = 2, backoff = 1.8 } = {}
         ) {
-          let attempt = 0;
-          let lastErr;
+          let attempt = 0,
+            lastErr;
           while (attempt <= retries) {
             const ctrl = new AbortController();
             const t = setTimeout(() => ctrl.abort(), timeout);
             try {
               const res = await fetch(url, {
-                mode: "cors",
                 signal: ctrl.signal,
                 cache: "no-cache",
               });
@@ -720,241 +751,278 @@
               clearTimeout(t);
               lastErr = e;
               await new Promise((r) =>
-                setTimeout(r, Math.pow(backoff, attempt) * 400)
+                setTimeout(r, Math.pow(backoff, attempt) * 350)
               );
               attempt++;
             }
           }
-          console.warn("getJSON failed:", url, lastErr);
+          console.warn("getJSON failed", url, lastErr);
           return null;
         }
 
-        async function loadAll() {
-          loader.classList.add("active");
+        // TTS
+        let voiceReady = false;
+        function loadVoicesOnce() {
+          if (voiceReady) return;
+          speechSynthesis.getVoices(); // kick
+          speechSynthesis.onvoiceschanged = () => {
+            voiceReady = true;
+          };
+          voiceReady = true; // best effort
+        }
+        function speakIcon(el, text, lang) {
+          if (!("speechSynthesis" in window)) {
+            alert("此瀏覽器不支援語音合成");
+            return;
+          }
+          loadVoicesOnce();
           try {
-            let [fast, charged, pokeMoves] = await Promise.all([
-              getJSON(POGO.fastMoves),
-              getJSON(POGO.chargedMoves),
-              getJSON(POGO.pokemonMoves),
-            ]);
-
-            if (
-              !Array.isArray(fast) ||
-              !Array.isArray(charged) ||
-              !Array.isArray(pokeMoves)
-            ) {
-              console.warn("外部 API 無法取得，使用內建離線資料");
-              fast = FALLBACK.fast;
-              charged = FALLBACK.charged;
-              pokeMoves = FALLBACK.pokeMoves;
-            }
-
-            // 去重（避免同一 dex 重複）
-            const seen = new Set();
-            pokeMoves = pokeMoves.filter((p) => {
-              if (seen.has(p.pokemon_id)) return false;
-              seen.add(p.pokemon_id);
-              return true;
-            });
-
-            state.fast = fast;
-            state.charged = charged;
-            state.pokeMoves = pokeMoves;
-
-            state.moveIndex = Object.fromEntries([
-              ...fast.map((m) => [m.name, { ...m, kind: "fast" }]),
-              ...charged.map((m) => [m.name, { ...m, kind: "charged" }]),
-            ]);
-
-            // 將限定招式（若 API 未提供）建入 moveIndex（無法取得數值則僅顯示 EX，不參與排序）
-            for (const [name, meta] of Object.entries(EXCLUSIVE_DICT)) {
-              if (!state.moveIndex[name]) {
-                state.moveIndex[name] = {
-                  name,
-                  power: null,
-                  duration: null,
-                  energy_delta: null,
-                  kind: meta.kind || "charged",
-                  ex: true,
-                };
-              } else {
-                // 標記為 EX（即使 API 有也顯示 EX 標誌）
-                state.moveIndex[name].ex = true;
-              }
-            }
-          } catch (e) {
-            console.error(e);
-            alert("載入資料失敗，已切換到離線示例資料。");
-            state.fast = FALLBACK.fast;
-            state.charged = FALLBACK.charged;
-            state.pokeMoves = FALLBACK.pokeMoves;
-            state.moveIndex = Object.fromEntries([
-              ...state.fast.map((m) => [m.name, m]),
-              ...state.charged.map((m) => [m.name, m]),
-            ]);
-            for (const [name, meta] of Object.entries(EXCLUSIVE_DICT)) {
-              if (!state.moveIndex[name]) {
-                state.moveIndex[name] = {
-                  name,
-                  power: null,
-                  duration: null,
-                  energy_delta: null,
-                  kind: meta.kind || "charged",
-                  ex: true,
-                };
-              } else {
-                state.moveIndex[name].ex = true;
-              }
-            }
-          } finally {
-            loader.classList.remove("active");
-            await render();
-            runSelfTests();
-          }
+            speechSynthesis.cancel();
+          } catch {}
+          const u = new SpeechSynthesisUtterance(text);
+          u.lang = LANGS[lang] || lang || "en-US";
+          const vs = speechSynthesis.getVoices();
+          const v = vs.find((v) =>
+            (v.lang || "")
+              .toLowerCase()
+              .startsWith((LANGS[lang] || "").toLowerCase())
+          );
+          if (v) u.voice = v;
+          el.classList.add("playing");
+          u.onend = u.oncancel = () => el.classList.remove("playing");
+          speechSynthesis.speak(u);
         }
 
-        // fetch tri-lingual names for a species id, cached
-        async function getSpeciesNames(id) {
-          if (state.speciesNames[id]) return state.speciesNames[id];
-          const res = await getJSON(POKE.species(id));
-          if (!res) {
-            const names = SPECIES_FALLBACK[id] || {
-              en: `#${id}`,
-              ja: `#${id}`,
-              zh: `#${id}`,
-            };
-            state.speciesNames[id] = names;
-            return names;
-          }
-          const names = { en: "", ja: "", zh: "" };
-          for (const n of res.names || []) {
-            if (n.language.name === "en") names.en = n.name;
-            if (n.language.name === "ja-Hrkt" || n.language.name === "ja")
-              names.ja = n.name;
-            if (n.language.name === "zh-Hant") names.zh = n.name;
-          }
-          if (!names.en) names.en = SPECIES_FALLBACK[id]?.en || `#${id}`;
-          if (!names.ja) names.ja = SPECIES_FALLBACK[id]?.ja || names.en;
-          if (!names.zh) names.zh = SPECIES_FALLBACK[id]?.zh || names.en;
-          state.speciesNames[id] = names;
-          return names;
-        }
-
-        // fetch tri-lingual names for a move by EN name
-        async function getMoveNames(enName) {
-          if (state.cacheMoveNames[enName]) return state.cacheMoveNames[enName];
-
-          // 先看內建 EX 字典（優先提供三語）
-          if (EXCLUSIVE_DICT[enName]) {
-            const { zh, ja } = EXCLUSIVE_DICT[enName];
-            const names = { en: enName, zh: zh || enName, ja: ja || enName };
-            state.cacheMoveNames[enName] = names;
-            return names;
-          }
-
-          const slug = toSlug(enName);
-          const res = await getJSON(POKE.move(slug));
-          if (!res) {
-            const names = { en: enName, ja: enName, zh: enName };
-            state.cacheMoveNames[enName] = names;
-            return names;
-          }
-          const names = { en: enName, ja: "", zh: "" };
-          for (const n of res.names || []) {
-            if (n.language.name === "en") names.en = n.name;
-            if (n.language.name === "ja-Hrkt" || n.language.name === "ja")
-              names.ja = n.name;
-            if (n.language.name === "zh-Hant") names.zh = n.name;
-          }
-          if (!names.ja) names.ja = names.en;
-          if (!names.zh) names.zh = names.en;
-          state.cacheMoveNames[enName] = names;
-          return names;
-        }
+        // helpers
+        const toSlug = (s) =>
+          String(s)
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/(^-|-$)/g, "");
+        const escapeHTML = (s) =>
+          String(s).replace(
+            /[&<>"']/g,
+            (c) =>
+              ({
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#39;",
+              }[c])
+          );
+        const escapeAttr = (s) =>
+          String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;");
 
         function inRegion(id, region) {
           if (region === "all") return true;
           const [a, b] = REGIONS[region];
           return id >= a && id <= b;
         }
+        const EPS = (m) =>
+          (m.energy_delta || 0) / ((m.duration || 1000) / 1000);
+        const DPS = (m) => (m.power || 0) / ((m.duration || 1000) / 1000);
 
-        function computeEPS(m) {
-          if (!m || m.duration == null || m.energy_delta == null) return null;
-          return (m.energy_delta || 0) / ((m.duration || 1000) / 1000);
-        }
-        function computeDPS(m) {
-          if (!m || m.duration == null || m.power == null) return null;
-          return (m.power || 0) / ((m.duration || 1000) / 1000);
+        // names (species) tri-lingual
+        async function getSpeciesNames(id) {
+          if (state.speciesNames[id]) return state.speciesNames[id];
+          const res = await getJSON(POKE.species(id));
+          if (!res) {
+            const n = SPECIES_FALLBACK[id] || {
+              en: "#" + id,
+              zh: "#" + id,
+              ja: "#" + id,
+            };
+            state.speciesNames[id] = n;
+            return n;
+          }
+          const n = { en: "", zh: "", ja: "" };
+          for (const x of res.names || []) {
+            if (x.language.name === "en") n.en = x.name;
+            if (x.language.name === "ja" || x.language.name === "ja-Hrkt")
+              n.ja = x.name;
+            if (x.language.name === "zh-Hant") n.zh = x.name;
+          }
+          if (!n.en) n.en = SPECIES_FALLBACK[id]?.en || "#" + id;
+          if (!n.ja) n.ja = SPECIES_FALLBACK[id]?.ja || n.en;
+          if (!n.zh) n.zh = SPECIES_FALLBACK[id]?.zh || n.en;
+          state.speciesNames[id] = n;
+          return n;
         }
 
-        function sortPokemon(list) {
-          const key = sortSel.value;
-          if (key === "dex")
-            return list.sort((a, b) => a.pokemon_id - b.pokemon_id);
-          if (key === "name_en")
-            return list.sort((a, b) =>
-              (a.names?.en || "").localeCompare(b.names?.en || "")
-            );
-          if (key === "name_zh")
-            return list.sort((a, b) =>
-              (a.names?.zh || "").localeCompare(b.names?.zh || "")
-            );
-          if (key === "name_ja")
-            return list.sort((a, b) =>
-              (a.names?.ja || "").localeCompare(b.names?.ja || "")
-            );
-          return list;
+        // pokemon types
+        async function getPokemonTypes(id) {
+          if (state.pokemonTypes[id]) return state.pokemonTypes[id];
+          const res = await getJSON(POKE.pokemon(id));
+          if (!res) {
+            state.pokemonTypes[id] = [];
+            return [];
+          }
+          const types = (res.types || [])
+            .sort((a, b) => a.slot - b.slot)
+            .map((t) => capitalize(t.type.name));
+          state.pokemonTypes[id] = types;
+          return types;
+        }
+        const capitalize = (s) =>
+          s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+
+        // move names tri-lingual (PoKeAPI) + fallback with exclusive JSON
+        async function getMoveNames(enName) {
+          if (state.moveNamesCache[enName]) return state.moveNamesCache[enName];
+          // fallback from exclusive dict first (for GO-only names)
+          const ex = EXCLUSIVE[enName];
+          const base = {
+            en: enName,
+            zh: ex?.names?.zh || enName,
+            ja: ex?.names?.ja || enName,
+          };
+          // try PokeAPI (most招式存在)
+          const res = await getJSON(POKE.move(toSlug(enName)));
+          if (!res) {
+            state.moveNamesCache[enName] = base;
+            return base;
+          }
+          const out = { ...base };
+          for (const n of res.names || []) {
+            if (n.language.name === "en") out.en = n.name;
+            if (n.language.name === "ja" || n.language.name === "ja-Hrkt")
+              out.ja = n.name;
+            if (n.language.name === "zh-Hant") out.zh = n.name;
+          }
+          state.moveNamesCache[enName] = out;
+          return out;
         }
 
+        // loading
+        async function loadAll() {
+          loader.classList.add("active");
+          try {
+            let [fast, charged, current] = await Promise.all([
+              getJSON(POGO.fast),
+              getJSON(POGO.charged),
+              getJSON(POGO.current),
+            ]);
+
+            if (
+              !Array.isArray(fast) ||
+              !Array.isArray(charged) ||
+              !Array.isArray(current)
+            ) {
+              console.warn("API failed → using fallback mini dataset");
+              fast = FALLBACK.fast;
+              charged = FALLBACK.charged;
+              current = FALLBACK.current;
+            }
+
+            // index moves by EN name
+            const fIdx = Object.fromEntries(
+              fast.map((m) => [m.name, { ...m, kind: "fast" }])
+            );
+            const cIdx = Object.fromEntries(
+              charged.map((m) => [m.name, { ...m, kind: "charged" }])
+            );
+            state.moveIndex = { ...fIdx, ...cIdx };
+            state.fast = fast;
+            state.charged = charged;
+
+            // 去重（以 pokemon_id），避免關都重複
+            const seen = new Set();
+            state.current = current.filter((x) => {
+              if (seen.has(x.pokemon_id)) return false;
+              seen.add(x.pokemon_id);
+              return true;
+            });
+          } finally {
+            loader.classList.remove("active");
+            await render();
+            selfTests();
+          }
+        }
+
+        // region tag
+        function dexRegion(id) {
+          for (const [k, [a, b]] of Object.entries(REGIONS))
+            if (id >= a && id <= b) return k[0].toUpperCase() + k.slice(1);
+          return "—";
+        }
+
+        // type badge html
+        const typeBadge = (t) =>
+          `<span class="type ${escapeHTML(t)}">${escapeHTML(t)}</span>`;
+
+        // move chip (for Top1 etc)
+        function moveChip(move, metric, names, exTag) {
+          const stat =
+            metric === "eps"
+              ? `${EPS(move).toFixed(2)} EPS`
+              : `${DPS(move).toFixed(2)} DPS`;
+          const t = move.type ? typeBadge(capitalize(move.type)) : "";
+          return `<span class="pill">${t}
+      <span>${escapeHTML(
+        names.zh
+      )}</span><span class="tts-ico" data-tts="${escapeAttr(
+            names.zh
+          )}" data-lang="zh">🔊</span>
+      <span> / ${escapeHTML(
+        names.en
+      )}</span><span class="tts-ico" data-tts="${escapeAttr(
+            names.en
+          )}" data-lang="en">🔊</span>
+      <span> / ${escapeHTML(
+        names.ja
+      )}</span><span class="tts-ico" data-tts="${escapeAttr(
+            names.ja
+          )}" data-lang="ja">🔊</span>
+      <span class="stat">(${stat}${exTag ? "・限定" : ""})</span>
+    </span>`;
+        }
+
+        // render
         let filtered = [];
-
         async function render() {
-          const q = qInput.value.trim();
+          const q = qInput.value.trim().toLowerCase();
           const region = regionSel.value;
           results.innerHTML = "";
 
-          // Primary filter by region & unique by pokemon_id
-          let list = state.pokeMoves.filter((p) =>
+          // region filter
+          let list = state.current.filter((p) =>
             inRegion(p.pokemon_id, region)
           );
-          const uniq = new Map();
-          for (const p of list) {
-            if (!uniq.has(p.pokemon_id)) uniq.set(p.pokemon_id, p);
-          }
-          list = Array.from(uniq.values());
 
+          // attach names and types first (for sort and display)
           await Promise.all(
             list.map(async (p) => {
               p.names = await getSpeciesNames(p.pokemon_id);
+              p.types = await getPokemonTypes(p.pokemon_id);
             })
           );
 
+          // query filter across names and moves (three languages for names; EN + translated for moves)
           if (q) {
-            const qlc = q.toLowerCase();
             const out = [];
             for (const p of list) {
-              const nameHit = [p.names.zh, p.names.en, p.names.ja].some(
-                (n) => n && String(n).toLowerCase().includes(qlc)
+              const nameHit = [p.names.zh, p.names.en, p.names.ja].some((x) =>
+                String(x).toLowerCase().includes(q)
               );
               let moveHit = false;
               if (!nameHit) {
-                const directHit = (arr) =>
-                  (arr || []).some((mv) =>
-                    String(mv).toLowerCase().includes(qlc)
-                  );
-                moveHit = directHit(p.fast_moves) || directHit(p.charged_moves);
+                // EN list first
+                const direct = (arr) =>
+                  (arr || []).some((n) => String(n).toLowerCase().includes(q));
+                moveHit = direct(p.fast_moves) || direct(p.charged_moves);
                 if (!moveHit) {
-                  const allMv = [
+                  // translated move names
+                  const all = [
                     ...new Set([
                       ...(p.fast_moves || []),
                       ...(p.charged_moves || []),
-                      ...(EXCLUSIVE_BY_POKEMON[p.pokemon_id] || []),
                     ]),
                   ];
-                  const tries = allMv.map(async (m) => {
-                    const n = await getMoveNames(m);
-                    return [n.zh, n.ja, n.en].some((x) =>
-                      String(x).toLowerCase().includes(qlc)
+                  const tries = all.map(async (en) => {
+                    const n = await getMoveNames(en);
+                    return [n.zh, n.ja].some((t) =>
+                      String(t).toLowerCase().includes(q)
                     );
                   });
                   try {
@@ -969,15 +1037,30 @@
             list = out;
           }
 
-          list = sortPokemon(list);
-          filtered = list;
+          // sort
+          const key = sortSel.value;
+          if (key === "dex") list.sort((a, b) => a.pokemon_id - b.pokemon_id);
+          if (key === "name_en")
+            list.sort((a, b) =>
+              (a.names.en || "").localeCompare(b.names.en || "")
+            );
+          if (key === "name_zh")
+            list.sort((a, b) =>
+              (a.names.zh || "").localeCompare(b.names.zh || "")
+            );
+          if (key === "name_ja")
+            list.sort((a, b) =>
+              (a.names.ja || "").localeCompare(b.names.ja || "")
+            );
 
+          filtered = list;
           if (!list.length) {
             empty.style.display = "block";
             return;
           }
           empty.style.display = "none";
 
+          // render in chunks
           const chunk = async (arr, size, fn) => {
             for (let i = 0; i < arr.length; i += size) {
               await Promise.all(arr.slice(i, i + size).map(fn));
@@ -985,232 +1068,241 @@
           };
 
           await chunk(list, 10, async (p) => {
-            const names = p.names;
-            const img = POKE.art(p.pokemon_id);
-
-            // 基礎候選：原始 moves
-            const fastBase = (p.fast_moves || [])
+            // compute Top1 fast by EPS, charged by DPS
+            const fastObjs = (p.fast_moves || [])
               .map((n) => state.moveIndex[n])
               .filter(Boolean);
-            const chargedBase = (p.charged_moves || [])
+            const chargedObjs = (p.charged_moves || [])
               .map((n) => state.moveIndex[n])
               .filter(Boolean);
+            const topFast = fastObjs.slice().sort((a, b) => EPS(b) - EPS(a))[0];
+            const topCharged = chargedObjs
+              .slice()
+              .sort((a, b) => DPS(b) - DPS(a))[0];
 
-            // 依 EPS/DPS 排序取前 5
-            const topFast = fastBase
-              .filter((m) => m.kind === "fast")
-              .sort((a, b) => (computeEPS(b) ?? -1) - (computeEPS(a) ?? -1))
-              .slice(0, 5);
-
-            const topCharged = chargedBase
-              .filter((m) => m.kind === "charged")
-              .sort((a, b) => (computeDPS(b) ?? -1) - (computeDPS(a) ?? -1))
-              .slice(0, 5);
-
-            // ★ 加入限定招式（強制顯示，避免重複）
-            const exList = EXCLUSIVE_BY_POKEMON[p.pokemon_id] || [];
-            for (const exName of exList) {
-              const mi = state.moveIndex[exName];
-              if (!mi) continue;
-              if (mi.kind === "fast") {
-                if (!topFast.find((x) => x.name === mi.name))
-                  topFast.push({ ...mi, ex: true });
-              } else {
-                if (!topCharged.find((x) => x.name === mi.name))
-                  topCharged.push({ ...mi, ex: true });
+            // figure exclusive moves for this pokemon
+            const forcedFast = [],
+              forcedCharged = [];
+            for (const [en, def] of Object.entries(EXCLUSIVE)) {
+              if (!def || !Array.isArray(def.pokemon_ids)) continue;
+              if (def.pokemon_ids.includes(p.pokemon_id)) {
+                if (def.category === "fast") forcedFast.push(en);
+                if (def.category === "charged") forcedCharged.push(en);
               }
             }
 
-            // 預先載入對應招式的三語名稱（含 EX）
-            const allMoves = [
+            // preload names for moves that will appear (top1 + forced)
+            const preload = [
               ...new Set([
-                ...topFast.map((m) => m.name),
-                ...topCharged.map((m) => m.name),
-                ...(EXCLUSIVE_BY_POKEMON[p.pokemon_id] || []),
+                ...(topFast ? [topFast.name] : []),
+                ...(topCharged ? [topCharged.name] : []),
+                ...forcedFast,
+                ...forcedCharged,
+                ...(p.fast_moves || []),
+                ...(p.charged_moves || []),
               ]),
             ];
-            await Promise.all(allMoves.map(getMoveNames));
+            await Promise.all(preload.map(getMoveNames));
 
+            const img = POKE.art(p.pokemon_id);
+            const names = p.names;
+
+            // build HTML
             const card = document.createElement("div");
             card.className = "card";
             card.innerHTML = `
-          <div class="head">
-            <div class="sprite"><img loading="lazy" src="${img}" alt="${escapeHTML(
+        <div class="head">
+          <div class="sprite">
+            <img loading="lazy" src="${img}" alt="${escapeHTML(
               names.en
-            )}" onerror="this.src=''; this.parentElement.textContent='No image'"/></div>
-            <div class="names">
-              <div class="name-line"><span class="name-tag">中文</span><span class="name-text">${escapeHTML(
-                names.zh || "—"
-              )}</span><button class="name-tts-btn" data-tts="${escapeAttr(
-              names.zh || names.en
-            )}" data-lang="zh-TW" title="中文發音">🔊</button></div>
-              <div class="name-line"><span class="name-tag">EN</span><span class="name-text">${escapeHTML(
-                names.en || "—"
-              )}</span><button class="name-tts-btn" data-tts="${escapeAttr(
-              names.en
-            )}" data-lang="en-US" title="English">🔊</button></div>
-              <div class="name-line"><span class="name-tag">日文</span><span class="name-text">${escapeHTML(
-                names.ja || "—"
-              )}</span><button class="name-tts-btn" data-tts="${escapeAttr(
-              names.ja || names.en
-            )}" data-lang="ja-JP" title="日本語">🔊</button></div>
-              <div class="region">
-                <span class="badge">#${p.pokemon_id}</span>
-                <span class="badge">${dexRegion(p.pokemon_id)}</span>
-              </div>
+            )}" onerror="this.src=''; this.parentElement.textContent='No image'"/>
+          </div>
+          <div class="names">
+            <div class="name-line">
+              <span class="tag">中文</span>
+              <span class="nm">${escapeHTML(names.zh)}</span>
+              <span class="tts-ico" data-tts="${escapeAttr(
+                names.zh
+              )}" data-lang="zh">🔊</span>
+            </div>
+            <div class="name-line">
+              <span class="tag">EN</span>
+              <span class="nm">${escapeHTML(names.en)}</span>
+              <span class="tts-ico" data-tts="${escapeAttr(
+                names.en
+              )}" data-lang="en">🔊</span>
+            </div>
+            <div class="name-line">
+              <span class="tag">日文</span>
+              <span class="nm">${escapeHTML(names.ja)}</span>
+              <span class="tts-ico" data-tts="${escapeAttr(
+                names.ja
+              )}" data-lang="ja">🔊</span>
+            </div>
+
+            <div class="region">
+              <span class="badge">#${p.pokemon_id}</span>
+              <span class="badge">${dexRegion(p.pokemon_id)}</span>
+            </div>
+            <div class="types">
+              ${p.types.map(typeBadge).join("")}
             </div>
           </div>
-          <div class="body" style="padding:10px 12px">
-            <div><strong>小招（依 EPS 排名前 5）</strong></div>
-            <div class="chips">${topFast
-              .map((m) => moveChip(m, "eps"))
-              .join("")}</div>
-            <div style="margin-top:8px"><strong>大招（依 DPS 排名前 5）</strong></div>
-            <div class="chips">${topCharged
-              .map((m) => moveChip(m, "dps"))
-              .join("")}</div>
-          </div>
-          <details ${expandChk.checked ? "open" : ""}>
-            <summary>展開招式對照表（三語）</summary>
-            ${movesTable(p, topFast, topCharged)}
-          </details>
-        `;
+        </div>
 
-            // 名稱 TTS
-            card.querySelectorAll(".name-tts-btn[data-tts]").forEach((btn) => {
-              btn.addEventListener("click", () =>
-                speak(btn.dataset.tts, btn.dataset.lang, btn)
+        <div class="body">
+          <div><strong>小招：EPS Top1 + 限定</strong></div>
+          <div class="chips" data-role="fast-chips"></div>
+          <div style="margin-top:8px"><strong>大招：DPS Top1 + 限定</strong></div>
+          <div class="chips" data-role="charged-chips"></div>
+        </div>
+
+        <details ${expandChk.checked ? "open" : ""}>
+          <summary>展開招式對照表（三語 / 屬性 / EPS/DPS）</summary>
+          ${movesTable(p)}
+        </details>
+      `;
+
+            // fill chips
+            const fastWrap = card.querySelector('[data-role="fast-chips"]');
+            const chargedWrap = card.querySelector(
+              '[data-role="charged-chips"]'
+            );
+
+            if (topFast) {
+              const n = await getMoveNames(topFast.name);
+              fastWrap.insertAdjacentHTML(
+                "beforeend",
+                moveChip(topFast, "eps", n, false)
               );
-            });
+            }
+            for (const en of forcedFast) {
+              const base = state.moveIndex[en] || {
+                name: en,
+                duration: 1000,
+                energy_delta: 7,
+                power: 5,
+                type: EXCLUSIVE[en]?.type || "Normal",
+                kind: "fast",
+              };
+              const n = await getMoveNames(en);
+              fastWrap.insertAdjacentHTML(
+                "beforeend",
+                moveChip(base, "eps", n, true)
+              );
+            }
 
-            // 表格中的 move TTS（事件委派）
-            card.addEventListener("click", (e) => {
-              const btn = e.target.closest(".move-tts-btn[data-tts]");
-              if (!btn) return;
-              speak(btn.dataset.tts, btn.dataset.lang, btn);
-            });
+            if (topCharged) {
+              const n = await getMoveNames(topCharged.name);
+              chargedWrap.insertAdjacentHTML(
+                "beforeend",
+                moveChip(topCharged, "dps", n, false)
+              );
+            }
+            for (const en of forcedCharged) {
+              const base = state.moveIndex[en] || {
+                name: en,
+                duration: 2600,
+                energy_delta: -50,
+                power: 100,
+                type: EXCLUSIVE[en]?.type || "Normal",
+                kind: "charged",
+              };
+              const n = await getMoveNames(en);
+              chargedWrap.insertAdjacentHTML(
+                "beforeend",
+                moveChip(base, "dps", n, true)
+              );
+            }
 
             results.appendChild(card);
           });
         }
 
-        function escapeHTML(s) {
-          return String(s).replace(
-            /[&<>"']/g,
-            (c) =>
-              ({
-                "&": "&amp;",
-                "<": "&lt;",
-                ">": "&gt;",
-                '"': "&quot;",
-                "'": "&#39;",
-              }[c])
-          );
-        }
-        function escapeAttr(s) {
-          return String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;");
-        }
-
-        function moveChip(m, metric) {
-          const eps = computeEPS(m);
-          const dps = computeDPS(m);
-          const stat =
-            metric === "eps"
-              ? eps != null
-                ? `${eps.toFixed(2)} EPS`
-                : "—"
-              : dps != null
-              ? `${dps.toFixed(2)} DPS`
-              : "—";
-          const ex = m.ex ? ` <span class="ex">[EX]</span>` : "";
-          return `<span class="pill">${escapeHTML(
-            m.name
-          )} ${ex} <span class="stat">(${stat})</span></span>`;
-        }
-
-        function dexRegion(id) {
-          for (const [k, [a, b]] of Object.entries(REGIONS)) {
-            if (id >= a && id <= b)
-              return k.charAt(0).toUpperCase() + k.slice(1);
-          }
-          return "—";
-        }
-
-        function movesTable(p, topFast, topCharged) {
-          // 將兩邊清單與（可能）未入前 5 的原始 moves + EX 合併，去重後顯示
-          const baseNames = new Set([
-            ...(p.fast_moves || []),
-            ...(p.charged_moves || []),
-          ]);
-          const exNames = new Set(EXCLUSIVE_BY_POKEMON[p.pokemon_id] || []);
-          const shown = new Set([
-            ...topFast.map((m) => m.name),
-            ...topCharged.map((m) => m.name),
-          ]);
-          const extra = [...baseNames, ...exNames].filter((n) => !shown.has(n));
+        // moves table
+        function movesTable(p) {
           const all = [
-            ...topFast.map((m) => ({ name: m.name, kind: "fast", ex: !!m.ex })),
-            ...topCharged.map((m) => ({
-              name: m.name,
+            ...(p.fast_moves || []).map((n) => ({ name: n, kind: "fast" })),
+            ...(p.charged_moves || []).map((n) => ({
+              name: n,
               kind: "charged",
-              ex: !!m.ex,
             })),
-            ...extra.map((n) => {
-              const mi = state.moveIndex[n] || { name: n, kind: "charged" };
-              return {
-                name: n,
-                kind: mi.kind || "charged",
-                ex: !!(mi && mi.ex),
-              };
-            }),
           ];
-
-          const rows = [];
-          for (const mv of all) {
-            const mstat = state.moveIndex[mv.name] || {
-              name: mv.name,
-              kind: mv.kind,
-            };
-            const names = state.cacheMoveNames[mv.name] || {
-              en: mv.name,
-              ja: mv.name,
-              zh: mv.name,
-            };
-            const eps = mstat.kind === "fast" ? computeEPS(mstat) : null;
-            const dps = mstat.kind === "charged" ? computeDPS(mstat) : null;
-            const exMark =
-              mv.ex || mstat.ex ? `<span class="ex">[EX]</span>` : "";
-            const zhBtn = `<button class="move-tts-btn" title="中文發音" data-tts="${escapeAttr(
-              names.zh
-            )}" data-lang="zh-TW">🔊</button>`;
-            const enBtn = `<button class="move-tts-btn" title="English" data-tts="${escapeAttr(
-              names.en
-            )}" data-lang="en-US">🔊</button>`;
-            const jaBtn = `<button class="move-tts-btn" title="日本語" data-tts="${escapeAttr(
-              names.ja
-            )}" data-lang="ja-JP">🔊</button>`;
-            rows.push(`<tr>
-          <td>${
-            mv.kind === "fast" ? "小招 Fast" : "大招 Charged"
-          } ${exMark}</td>
-          <td>${escapeHTML(names.zh || "—")} ${zhBtn}</td>
-          <td>${escapeHTML(names.en || "—")} ${enBtn}</td>
-          <td>${escapeHTML(names.ja || "—")} ${jaBtn}</td>
-          <td class="stat">${eps != null ? eps.toFixed(2) : ""}</td>
-          <td class="stat">${dps != null ? dps.toFixed(2) : ""}</td>
-        </tr>`);
+          // add exclusives (if not already in lists)
+          for (const [en, def] of Object.entries(EXCLUSIVE)) {
+            if (
+              def.pokemon_ids.includes(p.pokemon_id) &&
+              !all.find((x) => x.name === en)
+            ) {
+              all.push({ name: en, kind: def.category || "charged" });
+            }
           }
-          return `<div style="overflow:auto"><table><thead><tr><th>種類</th><th>中文</th><th>English</th><th>日本語</th><th>EPS</th><th>DPS</th></tr></thead><tbody>${rows.join(
-            ""
-          )}</tbody></table></div>`;
+
+          const rows = all
+            .map((m) => {
+              const stat = state.moveIndex[m.name] || {
+                name: m.name,
+                duration: 1000,
+                energy_delta: m.kind === "fast" ? 8 : -50,
+                power: m.kind === "fast" ? 7 : 100,
+                type: EXCLUSIVE[m.name]?.type || "Normal",
+                kind: m.kind,
+              };
+              const names = state.moveNamesCache[m.name] || {
+                en: m.name,
+                zh: m.name,
+                ja: m.name,
+              };
+              const eps = m.kind === "fast" ? EPS(stat).toFixed(2) : "";
+              const dps = m.kind === "charged" ? DPS(stat).toFixed(2) : "";
+              const type = capitalize(
+                stat.type || EXCLUSIVE[m.name]?.type || "Normal"
+              );
+              return `<tr>
+        <td>${m.kind === "fast" ? "小招 Fast" : "大招 Charged"}</td>
+        <td>${typeBadge(type)}</td>
+        <td>${escapeHTML(
+          names.zh
+        )} <span class="tts-ico" data-tts="${escapeAttr(
+                names.zh
+              )}" data-lang="zh">🔊</span></td>
+        <td>${escapeHTML(
+          names.en
+        )} <span class="tts-ico" data-tts="${escapeAttr(
+                names.en
+              )}" data-lang="en">🔊</span></td>
+        <td>${escapeHTML(
+          names.ja
+        )} <span class="tts-ico" data-tts="${escapeAttr(
+                names.ja
+              )}" data-lang="ja">🔊</span></td>
+        <td class="stat">${eps}</td>
+        <td class="stat">${dps}</td>
+      </tr>`;
+            })
+            .join("");
+
+          return `<div style="overflow:auto">
+      <table>
+        <thead><tr><th>種類</th><th>屬性</th><th>中文</th><th>English</th><th>日本語</th><th>EPS</th><th>DPS</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
         }
 
-        // Event listeners
+        // events
         qInput.addEventListener("input", debounce(render, 250));
         regionSel.addEventListener("change", render);
         sortSel.addEventListener("change", render);
-        expandChk.addEventListener("change", () => {
-          render();
+        expandChk.addEventListener("change", render);
+
+        // delegate TTS (names & moves)
+        results.addEventListener("click", (e) => {
+          const btn = e.target.closest(".tts-ico[data-tts]");
+          if (!btn) return;
+          const lang = btn.dataset.lang;
+          const text = btn.dataset.tts;
+          speakIcon(btn, text, lang);
         });
 
         function debounce(fn, ms) {
@@ -1221,31 +1313,20 @@
           };
         }
 
-        // -------- Simple self-tests --------
-        function runSelfTests() {
+        // diag tests
+        function selfTests() {
           const logs = [];
-          const ok = (m) => logs.push(`✅ ${m}`);
-          const ng = (m) => logs.push(`❌ ${m}`);
-
+          const ok = (s) => logs.push("✅ " + s);
+          const ng = (s) => logs.push("❌ " + s);
           try {
             const cards = $$(".card");
-            if (cards.length > 0) ok(`Rendered ${cards.length} card(s)`);
+            if (cards.length) ok(`Rendered ${cards.length} card(s)`);
             else ng("No cards rendered");
-            const anyNameTTS = $$(".card .name-tts-btn[data-tts]").length > 0;
-            anyNameTTS
-              ? ok("Name TTS buttons found")
-              : ng("No Name TTS buttons");
-            const anyMoveTTS = $$(".card details [data-tts]").length > 0;
-            anyMoveTTS
-              ? ok("Move TTS buttons present")
-              : ng("No Move TTS buttons");
-            // 檢查是否有 EX 標記
-            const anyEX = $$(".ex").length > 0;
-            anyEX
-              ? ok("Exclusive move labels [EX] present")
-              : ok("No EX labels yet");
+            const tts = $$(".tts-ico").length;
+            if (tts) ok(`Found ${tts} TTS icons`);
+            else ng("No TTS icons");
           } catch (e) {
-            ng("Self-test crashed: " + e.message);
+            ng("Self test error: " + e.message);
           }
           diag.textContent = logs.join("\n");
         }

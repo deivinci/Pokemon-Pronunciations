@@ -387,7 +387,7 @@
             <option value="paldea">帕底亞 (906–1017)</option>
           </select>
           <select id="sort">
-            <option value="dex">依圖鑑編號</option>
+            <option value="id" selected>ID</option>
             <option value="name_en">名稱 (EN)</option>
             <option value="name_zh">名稱 (中文)</option>
             <option value="name_ja">名稱 (日文)</option>
@@ -959,23 +959,23 @@
               : `${DPS(move).toFixed(2)} DPS`;
           const t = move.type ? typeBadge(capitalize(move.type)) : "";
           return `<span class="pill">${t}
-      <span>${escapeHTML(
-        names.zh
-      )}</span><span class="tts-ico" data-tts="${escapeAttr(
+        <span>${escapeHTML(
+          names.zh
+        )}</span><span class="tts-ico" data-tts="${escapeAttr(
             names.zh
           )}" data-lang="zh">🔊</span>
-      <span> / ${escapeHTML(
-        names.en
-      )}</span><span class="tts-ico" data-tts="${escapeAttr(
+        <span> / ${escapeHTML(
+          names.en
+        )}</span><span class="tts-ico" data-tts="${escapeAttr(
             names.en
           )}" data-lang="en">🔊</span>
-      <span> / ${escapeHTML(
-        names.ja
-      )}</span><span class="tts-ico" data-tts="${escapeAttr(
+        <span> / ${escapeHTML(
+          names.ja
+        )}</span><span class="tts-ico" data-tts="${escapeAttr(
             names.ja
           )}" data-lang="ja">🔊</span>
-      <span class="stat">(${stat}${exTag ? "・限定" : ""})</span>
-    </span>`;
+        <span class="stat">(${stat}${exTag ? "・限定" : ""})</span>
+      </span>`;
         }
 
         // render
@@ -1037,21 +1037,32 @@
             list = out;
           }
 
-          // sort
-          const key = sortSel.value;
-          if (key === "dex") list.sort((a, b) => a.pokemon_id - b.pokemon_id);
-          if (key === "name_en")
-            list.sort((a, b) =>
-              (a.names.en || "").localeCompare(b.names.en || "")
-            );
-          if (key === "name_zh")
-            list.sort((a, b) =>
-              (a.names.zh || "").localeCompare(b.names.zh || "")
-            );
-          if (key === "name_ja")
-            list.sort((a, b) =>
-              (a.names.ja || "").localeCompare(b.names.ja || "")
-            );
+          // sort: 預設一定照圖鑑編號，之後再依照選項覆蓋
+
+          // ---------- 排序 ----------
+          function sortList(list) {
+            const key = sortSel.value;
+            if (key === "id") {
+              return list.sort(
+                (a, b) => Number(a.pokemon_id) - Number(b.pokemon_id)
+              );
+            } else if (key === "name_en") {
+              return list.sort((a, b) =>
+                (a.names.en || "").localeCompare(b.names.en || "")
+              );
+            } else if (key === "name_zh") {
+              return list.sort((a, b) =>
+                (a.names.zh || "").localeCompare(b.names.zh || "")
+              );
+            } else if (key === "name_ja") {
+              return list.sort((a, b) =>
+                (a.names.ja || "").localeCompare(b.names.ja || "")
+              );
+            }
+            return list;
+          }
+          // ⭐ 排序一定放在最後
+          list = sortList(list);
 
           filtered = list;
           if (!list.length) {
@@ -1059,15 +1070,21 @@
             return;
           }
           empty.style.display = "none";
-
           // render in chunks
           const chunk = async (arr, size, fn) => {
             for (let i = 0; i < arr.length; i += size) {
-              await Promise.all(arr.slice(i, i + size).map(fn));
+              // 循序處理每個批次
+              for (const item of arr.slice(i, i + size)) {
+                await fn(item);
+              }
             }
           };
 
           await chunk(list, 10, async (p) => {
+            list.forEach((pokemon) => {
+              console.log(pokemon.pokemon_id);
+            });
+
             // compute Top1 fast by EPS, charged by DPS
             const fastObjs = (p.fast_moves || [])
               .map((n) => state.moveIndex[n])
@@ -1111,57 +1128,57 @@
             const card = document.createElement("div");
             card.className = "card";
             card.innerHTML = `
-        <div class="head">
-          <div class="sprite">
-            <img loading="lazy" src="${img}" alt="${escapeHTML(
+          <div class="head">
+            <div class="sprite">
+              <img loading="lazy" src="${img}" alt="${escapeHTML(
               names.en
             )}" onerror="this.src=''; this.parentElement.textContent='No image'"/>
+            </div>
+            <div class="names">
+              <div class="name-line">
+                <span class="tag">中文</span>
+                <span class="nm">${escapeHTML(names.zh)}</span>
+                <span class="tts-ico" data-tts="${escapeAttr(
+                  names.zh
+                )}" data-lang="zh">🔊</span>
+              </div>
+              <div class="name-line">
+                <span class="tag">EN</span>
+                <span class="nm">${escapeHTML(names.en)}</span>
+                <span class="tts-ico" data-tts="${escapeAttr(
+                  names.en
+                )}" data-lang="en">🔊</span>
+              </div>
+              <div class="name-line">
+                <span class="tag">日文</span>
+                <span class="nm">${escapeHTML(names.ja)}</span>
+                <span class="tts-ico" data-tts="${escapeAttr(
+                  names.ja
+                )}" data-lang="ja">🔊</span>
+              </div>
+
+              <div class="region">
+                <span class="badge">#${p.pokemon_id}</span>
+                <span class="badge">${dexRegion(p.pokemon_id)}</span>
+              </div>
+              <div class="types">
+                ${p.types.map(typeBadge).join("")}
+              </div>
+            </div>
           </div>
-          <div class="names">
-            <div class="name-line">
-              <span class="tag">中文</span>
-              <span class="nm">${escapeHTML(names.zh)}</span>
-              <span class="tts-ico" data-tts="${escapeAttr(
-                names.zh
-              )}" data-lang="zh">🔊</span>
-            </div>
-            <div class="name-line">
-              <span class="tag">EN</span>
-              <span class="nm">${escapeHTML(names.en)}</span>
-              <span class="tts-ico" data-tts="${escapeAttr(
-                names.en
-              )}" data-lang="en">🔊</span>
-            </div>
-            <div class="name-line">
-              <span class="tag">日文</span>
-              <span class="nm">${escapeHTML(names.ja)}</span>
-              <span class="tts-ico" data-tts="${escapeAttr(
-                names.ja
-              )}" data-lang="ja">🔊</span>
-            </div>
 
-            <div class="region">
-              <span class="badge">#${p.pokemon_id}</span>
-              <span class="badge">${dexRegion(p.pokemon_id)}</span>
-            </div>
-            <div class="types">
-              ${p.types.map(typeBadge).join("")}
-            </div>
+          <div class="body">
+            <div><strong>小招：EPS Top1 + 限定</strong></div>
+            <div class="chips" data-role="fast-chips"></div>
+            <div style="margin-top:8px"><strong>大招：DPS Top1 + 限定</strong></div>
+            <div class="chips" data-role="charged-chips"></div>
           </div>
-        </div>
 
-        <div class="body">
-          <div><strong>小招：EPS Top1 + 限定</strong></div>
-          <div class="chips" data-role="fast-chips"></div>
-          <div style="margin-top:8px"><strong>大招：DPS Top1 + 限定</strong></div>
-          <div class="chips" data-role="charged-chips"></div>
-        </div>
-
-        <details ${expandChk.checked ? "open" : ""}>
-          <summary>展開招式對照表（三語 / 屬性 / EPS/DPS）</summary>
-          ${movesTable(p)}
-        </details>
-      `;
+          <details ${expandChk.checked ? "open" : ""}>
+            <summary>展開招式對照表（三語 / 屬性 / EPS/DPS）</summary>
+            ${movesTable(p)}
+          </details>
+        `;
 
             // fill chips
             const fastWrap = card.querySelector('[data-role="fast-chips"]');
@@ -1259,35 +1276,35 @@
                 stat.type || EXCLUSIVE[m.name]?.type || "Normal"
               );
               return `<tr>
-        <td>${m.kind === "fast" ? "小招 Fast" : "大招 Charged"}</td>
-        <td>${typeBadge(type)}</td>
-        <td>${escapeHTML(
-          names.zh
-        )} <span class="tts-ico" data-tts="${escapeAttr(
+          <td>${m.kind === "fast" ? "小招 Fast" : "大招 Charged"}</td>
+          <td>${typeBadge(type)}</td>
+          <td>${escapeHTML(
+            names.zh
+          )} <span class="tts-ico" data-tts="${escapeAttr(
                 names.zh
               )}" data-lang="zh">🔊</span></td>
-        <td>${escapeHTML(
-          names.en
-        )} <span class="tts-ico" data-tts="${escapeAttr(
+          <td>${escapeHTML(
+            names.en
+          )} <span class="tts-ico" data-tts="${escapeAttr(
                 names.en
               )}" data-lang="en">🔊</span></td>
-        <td>${escapeHTML(
-          names.ja
-        )} <span class="tts-ico" data-tts="${escapeAttr(
+          <td>${escapeHTML(
+            names.ja
+          )} <span class="tts-ico" data-tts="${escapeAttr(
                 names.ja
               )}" data-lang="ja">🔊</span></td>
-        <td class="stat">${eps}</td>
-        <td class="stat">${dps}</td>
-      </tr>`;
+          <td class="stat">${eps}</td>
+          <td class="stat">${dps}</td>
+        </tr>`;
             })
             .join("");
 
           return `<div style="overflow:auto">
-      <table>
-        <thead><tr><th>種類</th><th>屬性</th><th>中文</th><th>English</th><th>日本語</th><th>EPS</th><th>DPS</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
-    </div>`;
+        <table>
+          <thead><tr><th>種類</th><th>屬性</th><th>中文</th><th>English</th><th>日本語</th><th>EPS</th><th>DPS</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
         }
 
         // events

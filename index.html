@@ -60,6 +60,18 @@
         grid-template-columns: 1fr 180px 160px 160px;
         gap: 10px;
       }
+      /* 手機版 RWD */
+@media (max-width: 768px) {
+  .controls {
+    grid-template-columns: 1fr; /* 單欄 */
+  }
+  .controls > * {
+    min-width: 100%; /* 每個子元素佔滿一行 */
+  }
+  .hint {
+    font-size: 11px; /* 提示字縮小 */
+  }
+}
       .search {
         position: relative;
       }
